@@ -5,6 +5,13 @@ fmt: ## format
 .PHONY: lint
 lint: ## lint
 	./gradlew detekt
+
+.PHONY: openapi.generate-api-server
+openapi.generate-api-server: ## スキーマファイル -> サーバー側のコードを生成
+	rm -rf ./build/openapi/server-code/
+	./gradlew :generateApiServer
+	@echo "Please command. 'open ./build/openapi/server-code/'"
+
 ################################################################################
 # Utility-Command help
 ################################################################################
