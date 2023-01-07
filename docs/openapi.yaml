@@ -5,18 +5,6 @@ info:
 servers:
   - url: /api
 paths:
-  /health:
-    get:
-      tags:
-        - Health Check
-      operationId: HealthCheck
-      responses:
-        '200':
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
   /articles:
     post:
       tags:
