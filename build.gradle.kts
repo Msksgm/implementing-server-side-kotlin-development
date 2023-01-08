@@ -160,6 +160,25 @@ dependencies {
      * [Spring-Boot-2.3ではjavax.validationを依存関係に追加しなければならない](https://qiita.com/tatetsujitomorrow/items/a397c311a95d66e4f955)
      */
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    /**
+     * jqwik
+     *
+     * URL
+     * - https://jqwik.net/
+     * MavenCentral
+     * - https://mvnrepository.com/artifact/net.jqwik/jqwik
+     * - https://mvnrepository.com/artifact/net.jqwik/jqwik-kotlin
+     * Main用途
+     * - Property Based Testing(pbt)
+     * 概要
+     * - Property Based Testingをするのに便利なライブラリ
+     * 参考
+     * - https://medium.com/criteo-engineering/introduction-to-property-based-testing-f5236229d237
+     * - https://johanneslink.net/property-based-testing-in-kotlin/#jqwiks-kotlin-support
+     */
+    testImplementation("net.jqwik:jqwik:1.7.1")
+    testImplementation("net.jqwik:jqwik-kotlin:1.7.1")
 }
 
 tasks.withType<KotlinCompile> {
