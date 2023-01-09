@@ -9,6 +9,7 @@ import com.example.implementingserversidekotlindevelopment.domain.Description
 import com.example.implementingserversidekotlindevelopment.domain.Slug
 import com.example.implementingserversidekotlindevelopment.domain.Title
 import com.example.implementingserversidekotlindevelopment.infra.ArticleRepositoryImpl
+import com.example.implementingserversidekotlindevelopment.infra.DbConnection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DynamicNode
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -72,7 +73,7 @@ class FeedArticleUseCaseTest {
                      * given:
                      */
                     val useCase = feedArticleUseCase(
-                        object : ArticleRepositoryImpl() {
+                        object : ArticleRepositoryImpl(DbConnection.namedParameterJdbcTemplate) {
                             override fun find(): Either<ArticleRepository.FindError, List<CreatedArticle>> {
                                 return testCase.articleRepositoryFindResult
                             }
