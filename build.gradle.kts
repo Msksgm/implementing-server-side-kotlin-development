@@ -179,6 +179,36 @@ dependencies {
      */
     testImplementation("net.jqwik:jqwik:1.7.1")
     testImplementation("net.jqwik:jqwik-kotlin:1.7.1")
+
+    /**
+     * Spring JDBC
+     *
+     * URL
+     * - https://spring.pleiades.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/package-summary.html
+     * MavenCentral
+     * - https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc
+     * Main用途
+     * - DBへ保存
+     * 概要
+     * - 特になし
+     *
+     * これを入れるだけで、application.properties/yamlや@ConfigurationによるDB接続設定が必要になる
+     */
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+
+    /**
+     * postgresql
+     *
+     * URL
+     * - https://jdbc.postgresql.org/
+     * MavenCentral
+     * - https://mvnrepository.com/artifact/org.postgresql/postgresql
+     * Main用途
+     * - DBつなぐ時のドライバ
+     * 概要
+     * - 特になし
+     */
+    implementation("org.postgresql:postgresql")
 }
 
 tasks.withType<KotlinCompile> {
