@@ -38,3 +38,33 @@ style:
   #
   UnusedImports:
     active: true  # (default: false)
+  #
+  # MaxLineLength
+  # 概要
+  # - 1 行あたりの最大文字数
+  #
+  MaxLineLength:
+    active: true
+    excludes: ['**/test/**'] # (default: なし）
+    maxLineLength: 120
+    excludePackageStatements: true
+    excludeImportStatements: true
+    excludeCommentStatements: false
+
+# formatter のルール
+formatting:
+  active: true
+  android: false
+  autoCorrect: true
+  #
+  # MaximumLineLength
+  # 概要
+  # - 1 行あたりの最大文字数
+  # - style>MaxLineLength のwrapper
+  # - style>MaxLineLength を修正したとき、こちらも修正が必要
+  #
+  MaximumLineLength:
+    active: true
+    excludes: ['**/test/**'] # (default: なし）
+    maxLineLength: 120
+    ignoreBackTickedIdentifier: false
