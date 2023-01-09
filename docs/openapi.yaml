@@ -151,8 +151,6 @@ components:
         - body
         - description
         - title
-        - createdAt
-        - updatedAt
       type: object
       properties:
         slug:
@@ -162,10 +160,6 @@ components:
         description:
           type: string
         body:
-          type: string
-        createdAt:
-          type: string
-        updatedAt:
           type: string
     SingleArticleResponse:
       required:
