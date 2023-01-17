@@ -2,10 +2,13 @@ package com.example.implementingserversidekotlindevelopment.presentation
 
 import com.example.implementingserversidekotlindevelopment.openapi.generated.controller.ArticlesApi
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.Article
+import com.example.implementingserversidekotlindevelopment.openapi.generated.model.GenericErrorModel
+import com.example.implementingserversidekotlindevelopment.openapi.generated.model.GenericErrorModelErrors
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.SingleArticleResponse
 import com.example.implementingserversidekotlindevelopment.usecase.ShowArticleUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 class ArticleController(val showArticleUseCase: ShowArticleUseCase) : ArticlesApi {
     override fun getArticle(slug: String): ResponseEntity<SingleArticleResponse> {
         val createdArticle = showArticleUseCase.execute(slug).fold(
-            { throw TODO() },
+            { throw ShowArticleUseCaseErrorException(it) },
             { it }
         )
 
@@ -33,4 +36,43 @@ class ArticleController(val showArticleUseCase: ShowArticleUseCase) : ArticlesAp
             HttpStatus.OK
         )
     }
+
+    /**
+     * 単一記事取得ユースケースがエラーを戻したときの Exception
+     *
+     * このクラスの例外が発生したときに、@ExceptionHandler で例外処理をおこなう
+     *
+     * @property error
+     */
+    data class ShowArticleUseCaseErrorException(val error: ShowArticleUseCase.Error) : Exception()
+
+    /**
+     * ShowArticleUseCaseErrorException をハンドリングする関数
+     *
+     * ShowArticleUseCase.Error の型に合わせてレスポンスを分岐させる
+     *
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = [ShowArticleUseCaseErrorException::class])
+    fun onShowArticleUseCaseErrorException(e: ShowArticleUseCaseErrorException): ResponseEntity<GenericErrorModel> =
+        when (val error = e.error) {
+            is ShowArticleUseCase.Error.NotFoundArticleBySlug -> ResponseEntity<GenericErrorModel>(
+                GenericErrorModel(
+                    errors = GenericErrorModelErrors(
+                        body = listOf("${error.slug.value} に該当する記事は見つかりませんでした")
+                    )
+                ),
+                HttpStatus.NOT_FOUND
+            )
+
+            is ShowArticleUseCase.Error.ValidationErrors -> ResponseEntity<GenericErrorModel>(
+                GenericErrorModel(
+                    errors = GenericErrorModelErrors(
+                        body = error.errors.map { it.message }
+                    )
+                ),
+                HttpStatus.FORBIDDEN
+            )
+        }
 }

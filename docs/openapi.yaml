@@ -51,6 +51,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MultipleArticleResponse'
+        '403':
+          description: ValidationError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorModel'
+        '404':
+          description: NotFound
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorModel'
   /articles/{slug}:
     get:
       tags:
@@ -127,7 +139,7 @@ paths:
       responses:
         '200':
           description: OK
-          content: {}
+          content: { }
 
 components:
   schemas:
