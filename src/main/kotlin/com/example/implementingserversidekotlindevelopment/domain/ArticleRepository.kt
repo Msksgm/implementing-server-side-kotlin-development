@@ -19,5 +19,12 @@ interface ArticleRepository {
      * 作成済記事取得時のエラー
      *
      */
-    sealed interface FindBySlugError
+    sealed interface FindBySlugError {
+        /**
+         * slug に該当する記事が見つからなかった
+         *
+         * @property slug
+         */
+        data class NotFound(val slug: Slug) : FindBySlugError
+    }
 }

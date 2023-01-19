@@ -57,7 +57,7 @@ class ShowArticleUseCaseImpl(val articleRepository: ArticleRepository) : ShowArt
         )
 
         val createdArticle = articleRepository.findBySlug(validatedSlug).fold(
-            { TODO() },
+            { return ShowArticleUseCase.Error.NotFoundArticleBySlug(validatedSlug).left() },
             { it }
         )
 
