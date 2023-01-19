@@ -50,6 +50,18 @@ style:
     excludePackageStatements: true
     excludeImportStatements: true
     excludeCommentStatements: false
+  #
+  # ReturnCount
+  # 概要
+  # - 関数あたりの return を記述可能な最大の数
+  #
+  ReturnCount:
+    active: true
+    max: 3 # (default: 2)
+    excludedFunctions: 'equals'
+    excludeLabeled: false
+    excludeReturnFromLambda: true
+    excludeGuardClauses: false
 
 # formatter のルール
 formatting:
