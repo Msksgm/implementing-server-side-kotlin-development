@@ -63,5 +63,38 @@ class ArticleRepositoryImplTest {
                 }
             }
         }
+
+        @Test
+        @DataSet(
+            value = [
+                "datasets/yml/given/empty-articles.yml"
+            ]
+        )
+        fun `準正常系-slug に該当する作成済記事が存在しない場合、FindBySlugError NotFound が戻り値`() {
+            /**
+             * given
+             * - 作成済記事が存在しない slug 名
+             */
+            val slug = Slug.newWithoutValidation("dummy-slug-01")
+            val articleRepository = ArticleRepositoryImpl(DbConnection.namedParameterJdbcTemplate)
+
+            /**
+             * when:
+             */
+            val actual = articleRepository.findBySlug(slug = slug)
+
+            /**
+             * then:
+             */
+            val expected = ArticleRepository.FindBySlugError.NotFound(slug = slug)
+
+            when (actual) {
+                is Either.Left -> {
+                    assertThat(actual.value).isEqualTo(expected)
+                }
+
+                is Either.Right -> assert(false)
+            }
+        }
     }
 }

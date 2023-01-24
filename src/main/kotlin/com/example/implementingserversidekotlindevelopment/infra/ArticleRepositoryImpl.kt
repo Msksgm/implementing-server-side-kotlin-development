@@ -39,7 +39,7 @@ class ArticleRepositoryImpl(val namedParameterJdbcTemplate: NamedParameterJdbcTe
          * DB から作成済記事が見つからなかった場合、早期 return
          */
         if (articleMapList.isEmpty()) {
-            return TODO()
+            return ArticleRepository.FindBySlugError.NotFound(slug = slug).left()
         }
 
         val articleMap = articleMapList.first()
