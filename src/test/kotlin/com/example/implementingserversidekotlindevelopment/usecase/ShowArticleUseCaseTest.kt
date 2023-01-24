@@ -10,6 +10,7 @@ import com.example.implementingserversidekotlindevelopment.domain.Description
 import com.example.implementingserversidekotlindevelopment.domain.Slug
 import com.example.implementingserversidekotlindevelopment.domain.Title
 import com.example.implementingserversidekotlindevelopment.infra.ArticleRepositoryImpl
+import com.example.implementingserversidekotlindevelopment.infra.DbConnection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DynamicNode
 import org.junit.jupiter.api.DynamicTest.dynamicTest
@@ -51,11 +52,12 @@ class ShowArticleUseCaseTest {
                      * - 有効な slug（32 文字の英数字）
                      */
                     val slug = "01234567890123456789012345678901"
-                    val useCase = ShowArticleUseCaseImpl(object : ArticleRepositoryImpl() {
-                        override fun findBySlug(slug: Slug): Either<ArticleRepository.FindBySlugError, CreatedArticle> {
-                            return testCase.articleRepositoryFindBySlugResult
-                        }
-                    })
+                    val useCase =
+                        ShowArticleUseCaseImpl(object : ArticleRepositoryImpl(DbConnection.namedParameterJdbcTemplate) {
+                            override fun findBySlug(slug: Slug): Either<ArticleRepository.FindBySlugError, CreatedArticle> {
+                                return testCase.articleRepositoryFindBySlugResult
+                            }
+                        })
 
                     /**
                      * when:
@@ -108,11 +110,12 @@ class ShowArticleUseCaseTest {
                     /**
                      * given:
                      */
-                    val useCase = ShowArticleUseCaseImpl(object : ArticleRepositoryImpl() {
-                        override fun findBySlug(slug: Slug): Either<ArticleRepository.FindBySlugError, CreatedArticle> {
-                            return testCase.articleRepositoryFindBySlugResult
-                        }
-                    })
+                    val useCase =
+                        ShowArticleUseCaseImpl(object : ArticleRepositoryImpl(DbConnection.namedParameterJdbcTemplate) {
+                            override fun findBySlug(slug: Slug): Either<ArticleRepository.FindBySlugError, CreatedArticle> {
+                                return testCase.articleRepositoryFindBySlugResult
+                            }
+                        })
 
                     /**
                      * when:
