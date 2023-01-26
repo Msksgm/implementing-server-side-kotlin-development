@@ -111,5 +111,45 @@ class ArticleTest {
                 JSONCompareMode.NON_EXTENSIBLE
             )
         }
+
+        @Test
+        fun `準正常系-slug に該当する作成済記事が存在しない場合、該当する記事が見つからないエラー`() {
+            /**
+             * given:
+             * - DB に存在しない作成済記事
+             */
+            val slug = "slug0000000000000000000000000001"
+
+            /**
+             * when:
+             */
+            val response = mockMvc.get("/api/articles/$slug") {
+                contentType = MediaType.APPLICATION_JSON
+            }.andReturn().response
+            val actualStatus = response.status
+            val actualResponseBody = response.contentAsString
+
+            /**
+             * then:
+             * - ステータスコードが一致する
+             * - レスポンスボディが一致する
+             */
+            val expectedStatus = HttpStatus.NOT_FOUND.value()
+            val expectedResponseBody = """
+                {
+                  "errors": {
+                    "body": [
+                      "slug0000000000000000000000000001 に該当する記事は見つかりませんでした"
+                    ]
+                  }
+                }
+            """.trimIndent()
+            assertThat(actualStatus).isEqualTo(expectedStatus)
+            JSONAssert.assertEquals(
+                expectedResponseBody,
+                actualResponseBody,
+                JSONCompareMode.NON_EXTENSIBLE
+            )
+        }
     }
 }
