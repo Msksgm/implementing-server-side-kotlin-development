@@ -9,7 +9,10 @@ import com.example.implementingserversidekotlindevelopment.domain.Description
 import com.example.implementingserversidekotlindevelopment.domain.Slug
 import com.example.implementingserversidekotlindevelopment.domain.Title
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.Article
+import com.example.implementingserversidekotlindevelopment.openapi.generated.model.NewArticle
+import com.example.implementingserversidekotlindevelopment.openapi.generated.model.NewArticleRequest
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.SingleArticleResponse
+import com.example.implementingserversidekotlindevelopment.usecase.CreateArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.ShowArticleUseCase
 import com.example.implementingserversidekotlindevelopment.util.ValidationError
 import org.assertj.core.api.Assertions.assertThat
@@ -64,7 +67,9 @@ class ArticleControllerTest {
                             override fun execute(slug: String?): Either<ShowArticleUseCase.Error, CreatedArticle> {
                                 return testCase.useCaseExecuteResult
                             }
-                        })
+                        },
+                        object : CreateArticleUseCase {}
+                    )
 
                     /**
                      * when:
@@ -121,13 +126,86 @@ class ArticleControllerTest {
                             override fun execute(slug: String?): Either<ShowArticleUseCase.Error, CreatedArticle> {
                                 return testCase.useCaseExecuteResult
                             }
-                        })
+                        },
+                        object : CreateArticleUseCase {}
+                    )
 
                     /**
                      * when:
                      */
                     val actual =
                         assertThrows<ArticleController.ShowArticleUseCaseErrorException> { controller.getArticle("dummy-slug") }
+
+                    /**
+                     * then:
+                     */
+                    assertThat(actual).isEqualTo(testCase.expected)
+                }
+            }
+        }
+    }
+
+    @Nested
+    class CreateArticle {
+        data class NormalTestCase(
+            val title: String,
+            val useCaseExecuteResult: Either<CreateArticleUseCase.Error, CreatedArticle>,
+            val expected: ResponseEntity<SingleArticleResponse>,
+        )
+
+        @TestFactory
+        fun createArticleTest(): Stream<DynamicNode> {
+            return Stream.of(
+                NormalTestCase(
+                    "正常系:",
+                    CreatedArticle.newWithoutValidation(
+                        slug = Slug.newWithoutValidation("dummy-slug"),
+                        title = Title.newWithoutValidation("dummy-title"),
+                        description = Description.newWithoutValidation("dummy-description"),
+                        body = Body.newWithoutValidation("dummy-body")
+                    ).right(),
+                    ResponseEntity<SingleArticleResponse>(
+                        SingleArticleResponse(
+                            Article(
+                                slug = "dummy-slug",
+                                title = "dummy-title",
+                                description = "dummy-description",
+                                body = "dummy-body"
+                            )
+                        ),
+                        HttpStatus.CREATED
+                    )
+                )
+            ).map { testCase ->
+                dynamicTest(testCase.title) {
+                    /**
+                     * given:
+                     */
+                    val controller = ArticleController(
+                        object : ShowArticleUseCase {},
+                        object : CreateArticleUseCase {
+                            override fun execute(
+                                title: String?,
+                                description: String?,
+                                body: String?,
+                            ): Either<CreateArticleUseCase.Error, CreatedArticle> {
+                                return testCase.useCaseExecuteResult
+                            }
+                        }
+                    )
+
+                    /**
+                     * when:
+                     */
+                    val actual = controller.createArticle(
+                        NewArticleRequest(
+                            NewArticle(
+                                "dummy-title",
+                                "dummy-description",
+                                "dummy-body"
+                            )
+                        )
+                    )
 
                     /**
                      * then:
