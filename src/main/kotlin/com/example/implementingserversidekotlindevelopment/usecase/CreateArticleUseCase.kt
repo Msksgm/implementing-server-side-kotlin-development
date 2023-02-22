@@ -1,11 +1,13 @@
 package com.example.implementingserversidekotlindevelopment.usecase
 
 import arrow.core.Either
+import arrow.core.left
 import arrow.core.right
 import com.example.implementingserversidekotlindevelopment.domain.ArticleRepository
 import com.example.implementingserversidekotlindevelopment.domain.CreatedArticle
 import com.example.implementingserversidekotlindevelopment.util.ValidationError
 import org.springframework.stereotype.Service
+import java.lang.UnsupportedOperationException
 
 /**
  * 記事作成ユースケース
@@ -52,12 +54,12 @@ class CreateArticleUseCaseImpl(
         body: String?,
     ): Either<CreateArticleUseCase.Error, CreatedArticle> {
         val unsavedCreatedArticle = CreatedArticle.new(title, description, body).fold(
-            { TODO() },
+            { return CreateArticleUseCase.Error.InvalidArticle(it).left() },
             { it }
         )
 
         val createdArticle = articleRepository.create(createdArticle = unsavedCreatedArticle).fold(
-            { TODO() },
+            { throw UnsupportedOperationException("現在この分岐に入ることはない") },
             { it }
         )
 
