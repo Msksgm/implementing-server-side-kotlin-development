@@ -214,5 +214,80 @@ class ArticleControllerTest {
                 }
             }
         }
+
+        data class AbnormalTestCase(
+            val title: String,
+            val useCaseExecuteResult: Either<CreateArticleUseCase.Error, CreatedArticle>,
+            val expected: ArticleController.CreateArticleUseCaseErrorException,
+        )
+
+        private val validationErrors =
+            CreateArticleUseCase.Error.InvalidArticle(
+                errors = listOf(
+                    object : ValidationError {
+                        override val message: String
+                            get() = "不正な title です"
+                    },
+                    object : ValidationError {
+                        override val message: String
+                            get() = "不正な body です"
+                    },
+                    object : ValidationError {
+                        override val message: String
+                            get() = "不正な description です"
+                    }
+                ),
+            )
+
+        @TestFactory
+        fun createArticleAbnormalTest(): Stream<DynamicNode> {
+            return Stream.of(
+                AbnormalTestCase(
+                    "異常系: UseCase が InvalidArticle を返す場合、CreateArticleUseCaseErrorException が発生する",
+                    validationErrors.left(),
+                    ArticleController.CreateArticleUseCaseErrorException(
+                        validationErrors
+                    ),
+                ),
+            ).map { testCase ->
+                dynamicTest(testCase.title) {
+                    /**
+                     * given:
+                     */
+                    val controller = ArticleController(
+                        object : ShowArticleUseCase {},
+                        object : CreateArticleUseCase {
+                            override fun execute(
+                                title: String?,
+                                description: String?,
+                                body: String?,
+                            ): Either<CreateArticleUseCase.Error, CreatedArticle> {
+                                return testCase.useCaseExecuteResult
+                            }
+                        }
+                    )
+
+                    /**
+                     * when:
+                     */
+                    val actual = assertThrows<ArticleController.CreateArticleUseCaseErrorException> {
+                        controller.createArticle(
+                            NewArticleRequest(
+                                NewArticle(
+                                    "dummy-title",
+                                    "dummy-description",
+                                    "dummy-body"
+                                )
+                            )
+                        )
+                    }
+
+                    /**
+                     * then:
+                     */
+                    assertThat(actual).isEqualTo(testCase.expected)
+                }
+            }
+        }
     }
 }

@@ -85,7 +85,7 @@ class ArticleController(val showArticleUseCase: ShowArticleUseCase, val createdA
             title = newArticleRequest.article.title,
             description = newArticleRequest.article.description,
             body = newArticleRequest.article.body,
-        ).fold({ throw TODO() }, { it })
+        ).fold({ throw CreateArticleUseCaseErrorException(it) }, { it })
 
         return ResponseEntity(
             SingleArticleResponse(
@@ -99,4 +99,34 @@ class ArticleController(val showArticleUseCase: ShowArticleUseCase, val createdA
             HttpStatus.CREATED
         )
     }
+
+    /**
+     * 記事作成ユースケースがエラーを戻したときの Exception
+     *
+     * このクラスの例外が発生したときに、@ExceptionHandler で例外をおこなう
+     *
+     * @property error
+     */
+    data class CreateArticleUseCaseErrorException(val error: CreateArticleUseCase.Error) : Throwable()
+
+    /**
+     * CreateArticleUseCaseErrorException をハンドリングする関数
+     *
+     * CreateArticleUseCase.Error の型に合わせてレスポンスを分岐する
+     *
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = [CreateArticleUseCaseErrorException::class])
+    fun onCreateArticleUseCaseErrorException(e: CreateArticleUseCaseErrorException): ResponseEntity<GenericErrorModel> =
+        when (val error = e.error) {
+            is CreateArticleUseCase.Error.InvalidArticle -> ResponseEntity<GenericErrorModel>(
+                GenericErrorModel(
+                    errors = GenericErrorModelErrors(
+                        body = error.errors.map { it.message }
+                    )
+                ),
+                HttpStatus.FORBIDDEN
+            )
+        }
 }
