@@ -13,6 +13,7 @@ import com.example.implementingserversidekotlindevelopment.openapi.generated.mod
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.NewArticleRequest
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.SingleArticleResponse
 import com.example.implementingserversidekotlindevelopment.usecase.CreateArticleUseCase
+import com.example.implementingserversidekotlindevelopment.usecase.FeedArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.ShowArticleUseCase
 import com.example.implementingserversidekotlindevelopment.util.ValidationError
 import org.assertj.core.api.Assertions.assertThat
@@ -68,7 +69,8 @@ class ArticleControllerTest {
                                 return testCase.useCaseExecuteResult
                             }
                         },
-                        object : CreateArticleUseCase {}
+                        object : CreateArticleUseCase {},
+                        object : FeedArticleUseCase {}
                     )
 
                     /**
@@ -127,7 +129,8 @@ class ArticleControllerTest {
                                 return testCase.useCaseExecuteResult
                             }
                         },
-                        object : CreateArticleUseCase {}
+                        object : CreateArticleUseCase {},
+                        object : FeedArticleUseCase {}
                     )
 
                     /**
@@ -191,7 +194,8 @@ class ArticleControllerTest {
                             ): Either<CreateArticleUseCase.Error, CreatedArticle> {
                                 return testCase.useCaseExecuteResult
                             }
-                        }
+                        },
+                        object : FeedArticleUseCase {}
                     )
 
                     /**
@@ -264,7 +268,8 @@ class ArticleControllerTest {
                             ): Either<CreateArticleUseCase.Error, CreatedArticle> {
                                 return testCase.useCaseExecuteResult
                             }
-                        }
+                        },
+                        object : FeedArticleUseCase {}
                     )
 
                     /**
