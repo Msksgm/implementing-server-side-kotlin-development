@@ -4,9 +4,11 @@ import com.example.implementingserversidekotlindevelopment.openapi.generated.con
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.Article
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.GenericErrorModel
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.GenericErrorModelErrors
+import com.example.implementingserversidekotlindevelopment.openapi.generated.model.MultipleArticleResponse
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.NewArticleRequest
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.SingleArticleResponse
 import com.example.implementingserversidekotlindevelopment.usecase.CreateArticleUseCase
+import com.example.implementingserversidekotlindevelopment.usecase.FeedArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.ShowArticleUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,9 +20,14 @@ import org.springframework.web.bind.annotation.RestController
  *
  * @property showArticleUseCase 単一記事取得ユースケース
  * @property createdArticleUseCase 記事作成ユースケース
+ * @property feedArticleUseCase 記事一覧取得ユースケース
  */
 @RestController
-class ArticleController(val showArticleUseCase: ShowArticleUseCase, val createdArticleUseCase: CreateArticleUseCase) :
+class ArticleController(
+    val showArticleUseCase: ShowArticleUseCase,
+    val createdArticleUseCase: CreateArticleUseCase,
+    val feedArticleUseCase: FeedArticleUseCase,
+) :
     ArticlesApi {
     override fun getArticle(slug: String): ResponseEntity<SingleArticleResponse> {
         val createdArticle = showArticleUseCase.execute(slug).fold(
@@ -129,4 +136,25 @@ class ArticleController(val showArticleUseCase: ShowArticleUseCase, val createdA
                 HttpStatus.FORBIDDEN
             )
         }
+
+    override fun getArticles(): ResponseEntity<MultipleArticleResponse> {
+        val useCaseResult = feedArticleUseCase.execute().fold(
+            { throw UnsupportedOperationException("想定外のエラー") },
+            { it }
+        )
+        return ResponseEntity(
+            MultipleArticleResponse(
+                articleCount = useCaseResult.articlesCount,
+                articles = useCaseResult.articles.map {
+                    Article(
+                        slug = it.slug.value,
+                        title = it.title.value,
+                        description = it.description.value,
+                        body = it.body.value
+                    )
+                }
+            ),
+            HttpStatus.OK
+        )
+    }
 }
