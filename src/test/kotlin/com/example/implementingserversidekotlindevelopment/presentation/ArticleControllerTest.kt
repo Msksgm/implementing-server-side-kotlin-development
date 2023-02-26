@@ -15,6 +15,7 @@ import com.example.implementingserversidekotlindevelopment.openapi.generated.mod
 import com.example.implementingserversidekotlindevelopment.usecase.CreateArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.FeedArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.ShowArticleUseCase
+import com.example.implementingserversidekotlindevelopment.usecase.UpdateArticleUseCase
 import com.example.implementingserversidekotlindevelopment.util.ValidationError
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DynamicNode
@@ -70,7 +71,8 @@ class ArticleControllerTest {
                             }
                         },
                         object : CreateArticleUseCase {},
-                        object : FeedArticleUseCase {}
+                        object : FeedArticleUseCase {},
+                        object : UpdateArticleUseCase {}
                     )
 
                     /**
@@ -130,7 +132,8 @@ class ArticleControllerTest {
                             }
                         },
                         object : CreateArticleUseCase {},
-                        object : FeedArticleUseCase {}
+                        object : FeedArticleUseCase {},
+                        object : UpdateArticleUseCase {}
                     )
 
                     /**
@@ -195,7 +198,8 @@ class ArticleControllerTest {
                                 return testCase.useCaseExecuteResult
                             }
                         },
-                        object : FeedArticleUseCase {}
+                        object : FeedArticleUseCase {},
+                        object : UpdateArticleUseCase {}
                     )
 
                     /**
@@ -269,7 +273,8 @@ class ArticleControllerTest {
                                 return testCase.useCaseExecuteResult
                             }
                         },
-                        object : FeedArticleUseCase {}
+                        object : FeedArticleUseCase {},
+                        object : UpdateArticleUseCase {}
                     )
 
                     /**

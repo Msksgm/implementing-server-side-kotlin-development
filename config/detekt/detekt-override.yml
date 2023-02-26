@@ -57,10 +57,20 @@ style:
   #
   ReturnCount:
     active: true
-    max: 3 # (default: 2)
+    max: 4 # (default: 2)
     excludedFunctions: 'equals'
     excludeLabeled: false
     excludeReturnFromLambda: true
+    excludeGuardClauses: false
+  #
+  # ReturnCount
+  # 概要
+  # - 関数あたりの throw を記述可能な最大の数
+  #
+  ThrowsCount:
+    active: true
+    excludes: ['**/test/**'] # (default: なし）
+    max: 2
     excludeGuardClauses: false
 
 # formatter のルール
