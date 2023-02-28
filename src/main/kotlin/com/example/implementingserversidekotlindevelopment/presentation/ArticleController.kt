@@ -1,5 +1,6 @@
 package com.example.implementingserversidekotlindevelopment.presentation
 
+import arrow.core.handleError
 import com.example.implementingserversidekotlindevelopment.openapi.generated.controller.ArticlesApi
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.Article
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.GenericErrorModel
@@ -9,6 +10,7 @@ import com.example.implementingserversidekotlindevelopment.openapi.generated.mod
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.SingleArticleResponse
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.UpdateArticleRequest
 import com.example.implementingserversidekotlindevelopment.usecase.CreateArticleUseCase
+import com.example.implementingserversidekotlindevelopment.usecase.DeleteCreatedArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.FeedArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.ShowArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.UpdateArticleUseCase
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController
  * @property createdArticleUseCase 記事作成ユースケース
  * @property feedArticleUseCase 記事一覧取得ユースケース
  * @property updateArticleUseCase 記事更新ユースーケース
+ * @property deleteCreatedArticleUseCase 記事削除ユースケース
  */
 @RestController
 class ArticleController(
@@ -31,6 +34,7 @@ class ArticleController(
     val createdArticleUseCase: CreateArticleUseCase,
     val feedArticleUseCase: FeedArticleUseCase,
     val updateArticleUseCase: UpdateArticleUseCase,
+    val deleteCreatedArticleUseCase: DeleteCreatedArticleUseCase,
 ) :
     ArticlesApi {
     override fun getArticle(slug: String): ResponseEntity<SingleArticleResponse> {
@@ -233,4 +237,12 @@ class ArticleController(
                 HttpStatus.FORBIDDEN
             )
         }
+
+    override fun deleteArticle(slug: String): ResponseEntity<Unit> {
+        deleteCreatedArticleUseCase.execute(
+            slug = slug
+        ).handleError { TODO() }
+
+        return ResponseEntity(Unit, HttpStatus.OK)
+    }
 }
