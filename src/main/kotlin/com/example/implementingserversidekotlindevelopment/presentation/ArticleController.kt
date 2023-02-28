@@ -241,8 +241,47 @@ class ArticleController(
     override fun deleteArticle(slug: String): ResponseEntity<Unit> {
         deleteCreatedArticleUseCase.execute(
             slug = slug
-        ).handleError { TODO() }
+        ).handleError { throw DeleteArticleUseCaseErrorException(it) }
 
         return ResponseEntity(Unit, HttpStatus.OK)
     }
+
+    /**
+     * 記事削除ユースケースがエラーを戻したときの Exception
+     *
+     * このクラスの例外が発生したときに、@ExceptionHandler で例外をおこなう
+     *
+     * @property error
+     */
+    data class DeleteArticleUseCaseErrorException(val error: DeleteCreatedArticleUseCase.Error) : Exception()
+
+    /**
+     * DeleteArticleUseCaseErrorException をハンドリングする関数
+     *
+     * DeleteArticleUseCase.Error の型に合わせてレスポンスを分岐する
+     *
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = [DeleteArticleUseCaseErrorException::class])
+    fun onDeleteArticleUseCaseErrorException(e: DeleteArticleUseCaseErrorException): ResponseEntity<GenericErrorModel> =
+        when (val error = e.error) {
+            is DeleteCreatedArticleUseCase.Error.NotFoundArticleBySlug -> ResponseEntity(
+                GenericErrorModel(
+                    errors = GenericErrorModelErrors(
+                        body = listOf("${error.slug.value} に該当する記事は見つかりませんでした")
+                    )
+                ),
+                HttpStatus.NOT_FOUND
+            )
+
+            is DeleteCreatedArticleUseCase.Error.ValidationErrors -> ResponseEntity(
+                GenericErrorModel(
+                    errors = GenericErrorModelErrors(
+                        body = error.errors.map { it.message }
+                    )
+                ),
+                HttpStatus.FORBIDDEN
+            )
+        }
 }
