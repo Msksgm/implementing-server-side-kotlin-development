@@ -1,7 +1,8 @@
 package com.example.implementingserversidekotlindevelopment.usecase
 
 import arrow.core.Either
-import arrow.core.handleError
+import arrow.core.getOrHandle
+import arrow.core.left
 import arrow.core.right
 import com.example.implementingserversidekotlindevelopment.domain.ArticleRepository
 import com.example.implementingserversidekotlindevelopment.domain.Slug
@@ -53,16 +54,16 @@ class DeleteCreatedArticleUseCaseImpl(
 ) : DeleteCreatedArticleUseCase {
     override fun execute(slug: String?): Either<DeleteCreatedArticleUseCase.Error, Unit> {
         val validatedSlug = Slug.new(slug = slug).fold(
-            { TODO() },
+            { return DeleteCreatedArticleUseCase.Error.ValidationErrors(it).left() },
             { it }
         )
 
-        articleRepository.delete(validatedSlug)
-            .handleError {
-                when (it) {
-                    is ArticleRepository.DeleteError.NotFound -> TODO()
-                }
+        articleRepository.delete(validatedSlug).getOrHandle {
+            return when (it) {
+                is ArticleRepository.DeleteError.NotFound ->
+                    DeleteCreatedArticleUseCase.Error.NotFoundArticleBySlug(validatedSlug).left()
             }
+        }
 
         return Unit.right()
     }
