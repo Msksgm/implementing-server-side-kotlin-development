@@ -13,6 +13,7 @@ import com.example.implementingserversidekotlindevelopment.openapi.generated.mod
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.NewArticleRequest
 import com.example.implementingserversidekotlindevelopment.openapi.generated.model.SingleArticleResponse
 import com.example.implementingserversidekotlindevelopment.usecase.CreateArticleUseCase
+import com.example.implementingserversidekotlindevelopment.usecase.DeleteCreatedArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.FeedArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.ShowArticleUseCase
 import com.example.implementingserversidekotlindevelopment.usecase.UpdateArticleUseCase
@@ -72,7 +73,8 @@ class ArticleControllerTest {
                         },
                         object : CreateArticleUseCase {},
                         object : FeedArticleUseCase {},
-                        object : UpdateArticleUseCase {}
+                        object : UpdateArticleUseCase {},
+                        object : DeleteCreatedArticleUseCase {},
                     )
 
                     /**
@@ -133,7 +135,8 @@ class ArticleControllerTest {
                         },
                         object : CreateArticleUseCase {},
                         object : FeedArticleUseCase {},
-                        object : UpdateArticleUseCase {}
+                        object : UpdateArticleUseCase {},
+                        object : DeleteCreatedArticleUseCase {},
                     )
 
                     /**
@@ -199,7 +202,8 @@ class ArticleControllerTest {
                             }
                         },
                         object : FeedArticleUseCase {},
-                        object : UpdateArticleUseCase {}
+                        object : UpdateArticleUseCase {},
+                        object : DeleteCreatedArticleUseCase {}
                     )
 
                     /**
@@ -274,7 +278,8 @@ class ArticleControllerTest {
                             }
                         },
                         object : FeedArticleUseCase {},
-                        object : UpdateArticleUseCase {}
+                        object : UpdateArticleUseCase {},
+                        object : DeleteCreatedArticleUseCase {}
                     )
 
                     /**
