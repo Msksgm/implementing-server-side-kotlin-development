@@ -1,10 +1,8 @@
 package com.example.implementingserversidekotlindevelopment.domain
 
-import arrow.core.Option
-import arrow.core.Validated.Valid
 import arrow.core.ValidatedNel
 import arrow.core.invalidNel
-import arrow.core.valid
+import arrow.core.validNel
 import com.example.implementingserversidekotlindevelopment.util.ValidationError
 
 /**
@@ -56,19 +54,23 @@ interface Body {
         fun new(body: String?): ValidatedNel<CreationError, Body> {
             /**
              * null チェック
+             *
+             * 空白だった場合、早期リターン
              */
-            val notNullBody =
-                Option.fromNullable(body).fold({ return CreationError.Required.invalidNel() }, { Valid(it) })
+            if (body == null) {
+                return CreationError.Required.invalidNel()
+            }
 
             /**
              * 文字数チェック
+             *
+             * 最大文字数より長かったら、早期リターン
              */
-            val validatedLength = when (notNullBody.value.length <= maximumLength) {
-                true -> Unit.valid()
-                false -> CreationError.TooLong(maximumLength).invalidNel()
+            if (body.length > maximumLength) {
+                return CreationError.TooLong(maximumLength).invalidNel()
             }
 
-            return validatedLength.map { ValidatedBody(notNullBody.value) }
+            return ValidatedBody(body).validNel()
         }
     }
 
