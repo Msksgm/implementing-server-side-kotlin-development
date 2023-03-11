@@ -83,7 +83,7 @@ class ShowArticleUseCaseTest {
         fun executeAbnormalTest(): Stream<DynamicNode> {
             return Stream.of(
                 AbnormalTestCase(
-                    "準正常系: ArticleRepository.findBySlug が CreatedArticle を返す場合、CreatedArticle が戻り値",
+                    "異常系: ArticleRepository.findBySlug が CreatedArticle を返す場合、CreatedArticle が戻り値",
                     "invalid-slug",
                     CreatedArticle.newWithoutValidation(
                         slug = Slug.newWithoutValidation("dummy-slug"),
@@ -95,7 +95,7 @@ class ShowArticleUseCaseTest {
                         .left(),
                 ),
                 AbnormalTestCase(
-                    "準正常系: ArticleRepository.findBySlug が CreatedArticle を返す場合、CreatedArticle が戻り値",
+                    "異常系: ArticleRepository.findBySlug が CreatedArticle を返す場合、CreatedArticle が戻り値",
                     "01234567890123456789012345678901",
                     ArticleRepository.FindBySlugError.NotFound(
                         slug = Slug.newWithoutValidation("01234567890123456789012345678901")

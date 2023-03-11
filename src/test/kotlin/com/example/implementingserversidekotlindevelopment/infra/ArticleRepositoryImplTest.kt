@@ -75,7 +75,7 @@ class ArticleRepositoryImplTest {
                 "datasets/yml/given/empty-articles.yml"
             ]
         )
-        fun `準正常系-slug に該当する作成済記事が存在しない場合、FindBySlugError NotFound が戻り値`() {
+        fun `異常系-slug に該当する作成済記事が存在しない場合、FindBySlugError NotFound が戻り値`() {
             /**
              * given
              * - 作成済記事が存在しない slug 名

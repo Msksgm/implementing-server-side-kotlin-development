@@ -38,7 +38,7 @@ class BodyTest {
         }
 
         @Property
-        fun `準正常系-長さが長すぎる場合、バリデーションエラーが戻り値`(
+        fun `異常系-長さが長すぎる場合、バリデーションエラーが戻り値`(
             @ForAll @StringLength(min = 1025) tooLongString: String,
         ) {
             /**
@@ -59,7 +59,7 @@ class BodyTest {
         }
 
         @Test
-        fun `準正常系 null の場合、バリデーションエラーが戻り値`() {
+        fun `異常系 null の場合、バリデーションエラーが戻り値`() {
             /**
              * given:
              */

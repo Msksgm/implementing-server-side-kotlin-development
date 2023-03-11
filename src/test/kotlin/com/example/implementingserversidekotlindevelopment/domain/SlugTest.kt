@@ -38,7 +38,7 @@ class SlugTest {
         }
 
         @Property
-        fun `準正常系-文字列が有効でない場合、バリデーションエラーが戻り値`(
+        fun `異常系-文字列が有効でない場合、バリデーションエラーが戻り値`(
             @ForAll @From(supplier = SlugInvalidRange::class) invalidString: String,
         ) {
             /**
@@ -58,7 +58,7 @@ class SlugTest {
         }
 
         @Test
-        fun `準正常系-null の場合、バリデーションエラーが戻り値`() {
+        fun `異常系-null の場合、バリデーションエラーが戻り値`() {
             /**
              * given:
              */

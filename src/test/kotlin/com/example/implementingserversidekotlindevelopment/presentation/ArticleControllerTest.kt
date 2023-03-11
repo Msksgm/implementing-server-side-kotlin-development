@@ -111,14 +111,14 @@ class ArticleControllerTest {
         fun getArticleAbnormalTest(): Stream<DynamicNode> {
             return Stream.of(
                 AbnormalTestCase(
-                    "準正常系: UseCase が NotFoundArticleBySlug を返す場合、ShowArticleUseCaseErrorException が発生する",
+                    "異常系: UseCase が NotFoundArticleBySlug を返す場合、ShowArticleUseCaseErrorException が発生する",
                     notFoundArticleBySlug.left(),
                     ArticleController.ShowArticleUseCaseErrorException(
                         notFoundArticleBySlug
                     ),
                 ),
                 AbnormalTestCase(
-                    "準正常系: UseCase が ValidationErrors を返す場合、ShowArticleUseCaseErrorException が発生する",
+                    "異常系: UseCase が ValidationErrors を返す場合、ShowArticleUseCaseErrorException が発生する",
                     validationErrors.left(),
                     ArticleController.ShowArticleUseCaseErrorException(validationErrors),
                 )
