@@ -40,7 +40,7 @@ class TitleTest {
         }
 
         @Property
-        fun `準正常系-長さが長すぎる場合、バリデーションエラーが戻り値`(
+        fun `異常系-長さが長すぎる場合、バリデーションエラーが戻り値`(
             @ForAll @NotBlank @StringLength(min = 33) tooLongString: String,
         ) {
             /**
@@ -61,7 +61,7 @@ class TitleTest {
         }
 
         @Test
-        fun `準正常系-null の場合、バリデーションエラーが戻り値`() {
+        fun `異常系-null の場合、バリデーションエラーが戻り値`() {
             /**
              * given:
              */
@@ -80,7 +80,7 @@ class TitleTest {
         }
 
         @Test
-        fun `準正常系-空白の場合、バリデーションエラーが戻り値`() {
+        fun `異常系-空白の場合、バリデーションエラーが戻り値`() {
             /**
              * given:
              */
