@@ -1,10 +1,8 @@
 package com.example.implementingserversidekotlindevelopment.domain
 
-import arrow.core.Option
-import arrow.core.Valid
 import arrow.core.ValidatedNel
 import arrow.core.invalidNel
-import arrow.core.valid
+import arrow.core.validNel
 import com.example.implementingserversidekotlindevelopment.util.ValidationError
 import java.util.UUID
 
@@ -52,19 +50,23 @@ interface Slug {
         fun new(slug: String?): ValidatedNel<CreationError, Slug> {
             /**
              * null チェック
+             *
+             * 空白だった場合、早期リターン
              */
-            val nonNullSlug =
-                Option.fromNullable(slug).fold({ return CreationError.Required.invalidNel() }, { Valid(it) })
+            if (slug == null) {
+                return CreationError.Required.invalidNel()
+            }
 
             /**
              * format チェック
+             *
+             * format が適切でなかったら、早期リターン
              */
-            val validatedFormat = when (nonNullSlug.value.matches(Regex(format))) {
-                true -> Unit.valid()
-                false -> CreationError.ValidFormat(nonNullSlug.value).invalidNel()
+            if (!slug.matches(Regex(format))) {
+                return CreationError.ValidFormat(slug).invalidNel()
             }
 
-            return validatedFormat.map { ValidatedSlug(nonNullSlug.value) }
+            return ValidatedSlug(slug).validNel()
         }
 
         /**
