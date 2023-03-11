@@ -1,9 +1,8 @@
 package com.example.implementingserversidekotlindevelopment.domain
 
-import arrow.core.Validated.Valid
 import arrow.core.ValidatedNel
 import arrow.core.invalidNel
-import arrow.core.valid
+import arrow.core.validNel
 import com.example.implementingserversidekotlindevelopment.util.ValidationError
 
 /**
@@ -55,22 +54,22 @@ interface Title {
         fun new(title: String?): ValidatedNel<CreationError, Title> {
             /**
              * null、空白チェック
+             *
+             * 空白だった場合、早期リターン
              */
-            val notNullOrBlankTitle = when (title.isNullOrBlank()) {
-                true -> return CreationError.Required.invalidNel()
-                false -> Valid(title)
+            if (title.isNullOrBlank()) {
+                return CreationError.Required.invalidNel()
             }
 
             /**
              * 文字数確認
+             *
+             * 最大文字数より長かったら、早期リターン
              */
-            val validatedLength =
-                when (notNullOrBlankTitle.value.length <= maximumLength) {
-                    true -> Unit.valid()
-                    false -> CreationError.TooLong(maximumLength).invalidNel()
-                }
-
-            return validatedLength.map { ValidatedTitle(notNullOrBlankTitle.value) }
+            if (title.length > maximumLength) {
+                return CreationError.TooLong(maximumLength).invalidNel()
+            }
+            return ValidatedTitle(title).validNel()
         }
     }
 

@@ -1,10 +1,8 @@
 package com.example.implementingserversidekotlindevelopment.domain
 
-import arrow.core.Option
-import arrow.core.Validated.Valid
 import arrow.core.ValidatedNel
 import arrow.core.invalidNel
-import arrow.core.valid
+import arrow.core.validNel
 import com.example.implementingserversidekotlindevelopment.util.ValidationError
 
 /**
@@ -48,19 +46,23 @@ interface Description {
         fun new(description: String?): ValidatedNel<CreationError, Description> {
             /**
              * null チェック
+             *
+             * 空白だった場合、早期リターン
              */
-            val notNullDescription =
-                Option.fromNullable(description).fold({ return CreationError.Required.invalidNel() }, { Valid(it) })
+            if (description == null) {
+                return CreationError.Required.invalidNel()
+            }
 
             /**
              * 文字数チェック
+             *
+             * 最大文字数より長かったら、早期リターン
              */
-            val validatedLength = when (notNullDescription.value.length <= maximumLength) {
-                true -> Unit.valid()
-                false -> CreationError.TooLong(maximumLength).invalidNel()
+            if (description.length > maximumLength) {
+                return CreationError.TooLong(maximumLength).invalidNel()
             }
 
-            return validatedLength.map { ValidatedDescription(notNullDescription.value) }
+            return ValidatedDescription(description).validNel()
         }
 
         /**
