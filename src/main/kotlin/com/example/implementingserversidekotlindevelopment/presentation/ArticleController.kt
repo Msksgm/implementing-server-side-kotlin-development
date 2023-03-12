@@ -38,6 +38,9 @@ class ArticleController(
 ) :
     ArticlesApi {
     override fun getArticle(slug: String): ResponseEntity<SingleArticleResponse> {
+        /**
+         * 作成済記事の取得
+         */
         val createdArticle = showArticleUseCase.execute(slug).fold(
             { throw ShowArticleUseCaseErrorException(it) },
             { it }
@@ -76,6 +79,9 @@ class ArticleController(
     @ExceptionHandler(value = [ShowArticleUseCaseErrorException::class])
     fun onShowArticleUseCaseErrorException(e: ShowArticleUseCaseErrorException): ResponseEntity<GenericErrorModel> =
         when (val error = e.error) {
+            /**
+             * 原因: slug に該当する記事が見つからなかった
+             */
             is ShowArticleUseCase.Error.NotFoundArticleBySlug -> ResponseEntity<GenericErrorModel>(
                 GenericErrorModel(
                     errors = GenericErrorModelErrors(
@@ -85,6 +91,9 @@ class ArticleController(
                 HttpStatus.NOT_FOUND
             )
 
+            /**
+             * 原因: slug に該当する記事が見つからなかった
+             */
             is ShowArticleUseCase.Error.ValidationErrors -> ResponseEntity<GenericErrorModel>(
                 GenericErrorModel(
                     errors = GenericErrorModelErrors(
