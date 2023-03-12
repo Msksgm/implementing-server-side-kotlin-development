@@ -51,13 +51,36 @@ interface ShowArticleUseCase {
 @Service
 class ShowArticleUseCaseImpl(val articleRepository: ArticleRepository) : ShowArticleUseCase {
     override fun execute(slug: String?): Either<ShowArticleUseCase.Error, CreatedArticle> {
+        /**
+         * slug の検証
+         *
+         * 不正な slug だった場合、早期 return
+         */
         val validatedSlug = Slug.new(slug).fold(
             { return ShowArticleUseCase.Error.ValidationErrors(it.all).left() },
             { it }
         )
 
+        /**
+         * 記事の取得
+         */
         val createdArticle = articleRepository.findBySlug(validatedSlug).fold(
-            { return ShowArticleUseCase.Error.NotFoundArticleBySlug(validatedSlug).left() },
+            /**
+             * 取得失敗
+             */
+            {
+                return when (it) {
+                    /**
+                     * 原因: 記事が見つからなかった
+                     */
+                    is ArticleRepository.FindBySlugError.NotFound -> ShowArticleUseCase.Error.NotFoundArticleBySlug(
+                        validatedSlug
+                    ).left()
+                }
+            },
+            /**
+             * 取得成功
+             */
             { it }
         )
 
