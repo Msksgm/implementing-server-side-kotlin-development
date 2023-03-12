@@ -53,11 +53,19 @@ class CreateArticleUseCaseImpl(
         description: String?,
         body: String?,
     ): Either<CreateArticleUseCase.Error, CreatedArticle> {
+        /**
+         * 作成済記事オブジェクトの作成
+         *
+         * バリデーションエラーが発生した場合、早期リターン
+         */
         val unsavedCreatedArticle = CreatedArticle.new(title, description, body).fold(
             { return CreateArticleUseCase.Error.InvalidArticle(it).left() },
             { it }
         )
 
+        /**
+         * 作成済記事を保存
+         */
         val createdArticle = articleRepository.create(createdArticle = unsavedCreatedArticle).fold(
             { throw UnsupportedOperationException("現在この分岐に入ることはない") },
             { it }
