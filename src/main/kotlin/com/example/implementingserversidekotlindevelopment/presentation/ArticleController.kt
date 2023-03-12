@@ -105,6 +105,9 @@ class ArticleController(
         }
 
     override fun createArticle(newArticleRequest: NewArticleRequest): ResponseEntity<SingleArticleResponse> {
+        /**
+         * 記事作成
+         */
         val createdArticle = createdArticleUseCase.execute(
             title = newArticleRequest.article.title,
             description = newArticleRequest.article.description,
@@ -144,6 +147,9 @@ class ArticleController(
     @ExceptionHandler(value = [CreateArticleUseCaseErrorException::class])
     fun onCreateArticleUseCaseErrorException(e: CreateArticleUseCaseErrorException): ResponseEntity<GenericErrorModel> =
         when (val error = e.error) {
+            /**
+             * 原因: 記事のリクエストが不正
+             */
             is CreateArticleUseCase.Error.InvalidArticle -> ResponseEntity<GenericErrorModel>(
                 GenericErrorModel(
                     errors = GenericErrorModelErrors(
