@@ -112,7 +112,10 @@ class ArticleController(
             title = newArticleRequest.article.title,
             description = newArticleRequest.article.description,
             body = newArticleRequest.article.body,
-        ).fold({ throw CreateArticleUseCaseErrorException(it) }, { it })
+        ).fold(
+            { throw CreateArticleUseCaseErrorException(it) },
+            { it }
+        )
 
         return ResponseEntity(
             SingleArticleResponse(
