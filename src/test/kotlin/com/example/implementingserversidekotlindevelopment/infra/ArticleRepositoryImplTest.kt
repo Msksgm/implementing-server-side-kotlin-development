@@ -126,10 +126,10 @@ class ArticleRepositoryImplTest {
         //     outputName = "src/test/resources/datasets/yml/then/created-articles.yml",
         //     includeTables = ["articles"]
         // )
-        fun `正常系-slug に該当する作成済記事が存在する場合、単一の作成済記事が戻り値`() {
+        fun `正常系-作成済記事が保存される`() {
             /**
              * given
-             * - 作成済記事が存在する slug 名
+             * - 保存する作成済記事
              */
             val unsavedCreatedArticle = CreatedArticle.newWithoutValidation(
                 slug = Slug.newWithoutValidation("slug0000000000000000000000000001"),
