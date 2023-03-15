@@ -29,7 +29,7 @@ class BodyTest {
             val actual = Body.new(validString)
 
             /**
-             * when:
+             * then:
              */
             when (actual) {
                 is Invalid -> assert(false) { "原因: ${actual.value}" }

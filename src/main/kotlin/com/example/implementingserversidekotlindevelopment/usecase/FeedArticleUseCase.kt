@@ -46,10 +46,14 @@ interface FeedArticleUseCase {
 @Service
 class FeedArticleUseCaseImpl(val articleRepository: ArticleRepository) : FeedArticleUseCase {
     override fun execute(): Either<FeedArticleUseCase.Error, FeedArticleUseCase.FeedCreatedArticles> {
+        /**
+         * 記事を全て取得する
+         */
         val createdArticles = articleRepository.find().fold(
             { throw UnsupportedOperationException("想定外のエラー") },
             { it }
         )
+
         return FeedArticleUseCase.FeedCreatedArticles(
             articles = createdArticles,
             articlesCount = createdArticles.size
