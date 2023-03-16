@@ -53,11 +53,21 @@ class DeleteCreatedArticleUseCaseImpl(
     val articleRepository: ArticleRepository,
 ) : DeleteCreatedArticleUseCase {
     override fun execute(slug: String?): Either<DeleteCreatedArticleUseCase.Error, Unit> {
+        /**
+         * slug のバリデーション
+         *
+         * 不正だった場合、早期 return
+         */
         val validatedSlug = Slug.new(slug = slug).fold(
             { return DeleteCreatedArticleUseCase.Error.ValidationErrors(it).left() },
             { it }
         )
 
+        /**
+         * 作成済記事の削除
+         *
+         * slug に該当する記事が存在しない場合、早期 return
+         */
         articleRepository.delete(validatedSlug).getOrHandle {
             return when (it) {
                 is ArticleRepository.DeleteError.NotFound ->
