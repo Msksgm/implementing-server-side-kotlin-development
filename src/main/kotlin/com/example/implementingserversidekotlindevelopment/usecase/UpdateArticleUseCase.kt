@@ -67,18 +67,31 @@ class UpdateArticleUseCaseImpl(val articleRepository: ArticleRepository) : Updat
         description: String?,
         body: String?,
     ): Either<UpdateArticleUseCase.Error, CreatedArticle> {
-        val slug = Slug.new(slug).fold(
+        /**
+         * slug のバリデーション
+         *
+         * 不正だった場合、早期 return
+         */
+        val validatedSlug = Slug.new(slug).fold(
             { return UpdateArticleUseCase.Error.ValidationErrors(it.all).left() },
             { it }
         )
 
+        /**
+         * 更新用作成済記事の生成
+         *
+         * 不正だった場合、早期 return
+         */
         val unsavedCreatedArticle = UpdatableCreatedArticle.new(title, description, body).fold(
             { return UpdateArticleUseCase.Error.InvalidArticle(it).left() },
             { it }
         )
 
-        val createdArticle = articleRepository.update(slug, unsavedCreatedArticle).fold(
-            { return UpdateArticleUseCase.Error.NotFoundArticleBySlug(slug).left() },
+        /**
+         * 作成済記事の更新
+         */
+        val createdArticle = articleRepository.update(validatedSlug, unsavedCreatedArticle).fold(
+            { return UpdateArticleUseCase.Error.NotFoundArticleBySlug(validatedSlug).left() },
             { it }
         )
         return createdArticle.right()
