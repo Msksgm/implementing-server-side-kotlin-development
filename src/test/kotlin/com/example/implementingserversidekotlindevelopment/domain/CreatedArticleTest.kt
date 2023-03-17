@@ -18,7 +18,7 @@ class CreatedArticleTest {
     fun articleEqualTest(): Stream<DynamicNode> {
         return Stream.of(
             TestCase(
-                "ArticleId が一致する場合、他のプロパティが異なっていても、true を戻す",
+                "Slug が一致する場合、他のプロパティが異なっていても、true を戻す",
                 CreatedArticle.newWithoutValidation(
                     slug = Slug.newWithoutValidation("dummy-slug"),
                     title = Title.newWithoutValidation("dummy-title"),
@@ -34,7 +34,7 @@ class CreatedArticleTest {
                 true
             ),
             TestCase(
-                "ArticleId が一致する場合、他のプロパティが異なっていても、true を戻す",
+                "Slug が一致する場合、他のプロパティが同じでも、false を戻す",
                 CreatedArticle.newWithoutValidation(
                     slug = Slug.newWithoutValidation("dummy-slug"),
                     title = Title.newWithoutValidation("dummy-title"),
@@ -51,7 +51,20 @@ class CreatedArticleTest {
             )
         ).map { testCase ->
             dynamicTest(testCase.title) {
-                assertThat(testCase.createdArticle == testCase.otherCreatedArticle).isEqualTo(testCase.expected)
+                /**
+                 * given:
+                 */
+
+                /**
+                 * when:
+                 * - 作成済み記事を比較
+                 */
+                val actual = testCase.createdArticle == testCase.otherCreatedArticle
+
+                /**
+                 * then:
+                 */
+                assertThat(actual).isEqualTo(testCase.expected)
             }
         }
     }

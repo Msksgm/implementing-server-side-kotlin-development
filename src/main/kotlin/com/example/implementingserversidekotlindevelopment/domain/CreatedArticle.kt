@@ -70,8 +70,10 @@ class CreatedArticle private constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        val otherCreatedArticle = other as? CreatedArticle ?: return false
-        return this.slug == otherCreatedArticle.slug
+        if (other == null || other !is CreatedArticle) {
+            return false
+        }
+        return this.slug == other.slug
     }
 
     override fun hashCode(): Int {
