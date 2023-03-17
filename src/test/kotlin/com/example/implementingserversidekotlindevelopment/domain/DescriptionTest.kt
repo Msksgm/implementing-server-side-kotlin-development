@@ -88,6 +88,5 @@ class DescriptionTest {
                 .strings()
                 .ofMinLength(0)
                 .ofMaxLength(64)
-                .filter { !it.startsWith("diff-") }
     }
 }

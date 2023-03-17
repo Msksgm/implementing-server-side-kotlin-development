@@ -11,17 +11,16 @@ import net.jqwik.api.From
 import net.jqwik.api.Property
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.*
 
 class SlugTest {
     class New {
-        @Test
-        fun `正常系-文字列が有効な場合、検証済の Slug が戻り値`() {
+        @Property
+        fun `正常系-文字列が有効な場合、検証済の Slug が戻り値`(
+            @ForAll @From(supplier = SlugValidRange::class) validString: String,
+        ) {
             /**
              * given:
-             * - slug が
              */
-            val validString = UUID.randomUUID().toString().split("-").joinToString("")
 
             /**
              * when:
@@ -94,6 +93,16 @@ class SlugTest {
             assertThat(actual).matches(expectedPattern)
         }
     }
+    /**
+     * Slug の有効な範囲の String プロパティ
+     */
+    class SlugValidRange : ArbitrarySupplier<String> {
+        override fun get(): Arbitrary<String> =
+            Arbitraries.strings()
+                .numeric()
+                .withCharRange('a', 'z')
+                .ofLength(32)
+    }
 
     /**
      * Slug の無効な範囲の String プロパティ
@@ -101,7 +110,6 @@ class SlugTest {
     class SlugInvalidRange : ArbitrarySupplier<String> {
         override fun get(): Arbitrary<String> =
             Arbitraries.strings()
-                .ofLength(32)
                 .filter { !it.matches(Regex("^[a-z0-9]{32}$")) }
     }
 }
